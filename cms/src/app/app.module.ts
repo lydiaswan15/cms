@@ -15,6 +15,9 @@ import { MessageItemComponent } from './messages/message-item/message-item.compo
 import { MessageEditComponent } from './messages/message-edit/message-edit.component';
 import { MessageListComponent } from './messages/message-list/message-list.component';
 import { UsersDirectiveDirective } from './users-directive.directive';
+import { DocumentService } from './documents/document.service';
+import { MessageService } from './messages/message.service';
+import { ContactService } from './contacts/contact.service';
 
 @NgModule({
   declarations: [
@@ -36,7 +39,7 @@ import { UsersDirectiveDirective } from './users-directive.directive';
   imports: [
     BrowserModule
   ],
-  providers: [],
+  providers: [DocumentService, MessageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
