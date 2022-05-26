@@ -18,6 +18,11 @@ import { UsersDirectiveDirective } from './users-directive.directive';
 import { DocumentService } from './documents/document.service';
 import { MessageService } from './messages/message.service';
 import { ContactService } from './contacts/contact.service';
+import { RouterModule, RouterOutlet } from '@angular/router';
+import { AppRoutingModule } from './app-routing.module';
+import { FormsModule } from '@angular/forms';
+import { DocumentEditComponent } from './documents/document-edit/document-edit.component';
+import { ContactEditComponent } from './contacts/contact-edit/contact-edit.component';
 
 @NgModule({
   declarations: [
@@ -34,10 +39,14 @@ import { ContactService } from './contacts/contact.service';
     MessageItemComponent,
     MessageEditComponent,
     MessageListComponent,
-    UsersDirectiveDirective
+    UsersDirectiveDirective,
+    DocumentEditComponent,
+    ContactEditComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule, 
+    AppRoutingModule, 
+    FormsModule
   ],
   providers: [DocumentService, MessageService],
   bootstrap: [AppComponent]

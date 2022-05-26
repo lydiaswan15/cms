@@ -1,5 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { ActivatedRoute, Params, Router} from '@angular/router';
+import { WindRefService } from 'src/app/wind-ref.service';
 import { Document } from '../document.model';
+import { DocumentService } from '../document.service';
 
 @Component({
   selector: 'app-document-detail',
@@ -8,12 +11,34 @@ import { Document } from '../document.model';
 })
 export class DocumentDetailComponent implements OnInit {
 
-  @Input() document: Document;
+  document: Document;
+  id: number;
+  nativeWindow: any;
   
 
-  constructor() { }
+  constructor(private documentService: DocumentService, 
+              private router: Router, 
+              private route: ActivatedRoute, 
+              private windRefService: WindRefService) { }
 
   ngOnInit(): void {
+      this.route.params.subscribe((params: Params) =>{
+      this.id = +params['id'];
+      this.document = this.documentService.getDocument(this.id);
+
+      this.nativeWindow = this.windRefService.getNativeWindow();
+    });
+  }
+
+  onView(){
+    if(this.document.url){
+      this.nativeWindow.open(this.document.url);
+    }
+  }
+
+  onDelete(){
+    this.documentService.deleteDocument(this.document);
+    this.router.navigate(['documents']);
   }
 
 }
