@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-document-edit',
@@ -7,9 +8,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DocumentEditComponent implements OnInit {
 
-  constructor() { }
+  originalDocument: Document;
+  document: Document;
+  editMode: false;
+
+
+  constructor() {
+   }
 
   ngOnInit(): void {
+    console.log(this.document);
   }
+
+  onSubmit(form: FormGroup){}
+  onCancel(){}
 
 }

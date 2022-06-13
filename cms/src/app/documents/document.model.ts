@@ -1,5 +1,6 @@
 export class Document{
-    constructor(public id, public name, public description, public url, public children?){
-
-    }
+    public name: string;
+    constructor(public id, name, public description, public url, public children?){
+        this.name = name;
+    }   
 }
