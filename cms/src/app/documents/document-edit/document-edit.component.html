@@ -6,7 +6,8 @@
           <div class="col-sm-12 form-group">
             <label for="name">Document Title:</label>
             <input
-            #name = "ngModel"
+              [ngModel]=document?.name
+              #name = "ngModel"
               type="text"
               id="name"
               class="form-control"
@@ -22,6 +23,7 @@
           <div class="col-sm-12 form-group">
             <label for="description">Document Description:</label>
             <input
+              [ngModel]=document?.description
               #description = "ngModel"
               type="text"
               id="description"
@@ -29,8 +31,7 @@
               size="120"
               max="255"
               name="description"
-              ngModel
-              required>
+              ngModel>
           </div>
         </div>
   
@@ -38,6 +39,7 @@
           <div class="col-sm-12 form-group">
             <label for="url">Document URL:</label>
             <input
+            [ngModel]=document?.url
               #url = "ngModel"
               type="text"
               id="url"
@@ -49,10 +51,7 @@
               required>
           </div>
         </div>
-
-        <div 
-            class = "alert alert-danger"
-            >The Document Title and Document URL are required fields.</div>
+        <div class="alert alert-danger" *ngIf="!url.valid || !name.valid">The Document Title and Document URL are required fields.</div>
   
         <div class="row">
           <div class="col-xs-12 btn-toolbar">
