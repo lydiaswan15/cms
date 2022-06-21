@@ -77,7 +77,7 @@ export class DocumentService{
             return;
          }
 
-         newDocument.id = originalDocument.id
+        //  newDocument.id = originalDocument.id
         this.documents[pos] = newDocument
         let documentsListClone = this.documents.slice()
         this.documentListChangedEvent.next(documentsListClone)

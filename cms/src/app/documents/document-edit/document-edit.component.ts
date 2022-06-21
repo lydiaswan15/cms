@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Document } from '../document.model';
 import { DocumentService } from '../document.service';
-import { Router } from '@angular/router';
+import { Params, Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -14,7 +14,7 @@ export class DocumentEditComponent implements OnInit {
 
   originalDocument: Document;
   document: Document;
-  editMode: false;
+  editMode: boolean = false;
 
 
 
@@ -25,16 +25,39 @@ export class DocumentEditComponent implements OnInit {
 }
 
   ngOnInit(): void {
-    console.log(this.document);
+    this.route.params.subscribe((params: Params) =>{
+      let id = params.id;
+      if(id == undefined || null){
+        this.editMode = false;
+        return;
+      }
+      this.originalDocument = this.documentService.getDocument(id);
+      if(this.originalDocument == undefined ||null){
+        return;
+      }
+      this.editMode = true;
+      this.document = JSON.parse(JSON.stringify(this.originalDocument));
+
+    })
   }
 
   onSubmit(form: FormGroup){
+    console.log(this.originalDocument);
     let value = form.value;
-    console.log(value);
-    let newDocument = new Document(1, value.name, value.description, value.url);
-    // How do we update the ID to be unique for each value?
+    let newDocument = new Document(value.id, value.name, value.description, value.url);
+    console.log(newDocument);
+
+    if(this.editMode == true){
+      this.documentService.updateDocument(this.originalDocument, newDocument);
+    }
+    else{
+      this.documentService.addDocument(newDocument)
+    }
+    this.router.navigate(['/documents']);
 
   }
-  onCancel(){}
+  onCancel(){
+    this.router.navigate(['documents']);
+  }
 
 }

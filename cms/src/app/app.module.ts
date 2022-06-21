@@ -18,11 +18,13 @@ import { UsersDirectiveDirective } from './users-directive.directive';
 import { DocumentService } from './documents/document.service';
 import { MessageService } from './messages/message.service';
 import { ContactService } from './contacts/contact.service';
-import { RouterModule, RouterOutlet } from '@angular/router';
+import { RouteConfigLoadEnd, RouterModule, RouterOutlet } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DocumentEditComponent } from './documents/document-edit/document-edit.component';
 import { ContactEditComponent } from './contacts/contact-edit/contact-edit.component';
+import {DndModule} from 'ng2-dnd';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -44,9 +46,12 @@ import { ContactEditComponent } from './contacts/contact-edit/contact-edit.compo
     ContactEditComponent
   ],
   imports: [
+    // DndModule.forRoot(),
     BrowserModule, 
-    AppRoutingModule, 
-    FormsModule
+    AppRoutingModule,  
+    ReactiveFormsModule,
+    HttpClientModule,
+    FormsModule,
   ],
   providers: [DocumentService, MessageService],
   bootstrap: [AppComponent]
