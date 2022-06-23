@@ -37,18 +37,19 @@ export class ContactEditComponent implements OnInit {
       this.contact = JSON.parse(JSON.stringify(this.originalContact));
 
       // This line might not be correct
-      if(this.groupContacts != null){
-        this.groupContacts = JSON.parse(JSON.stringify(this.originalContact));
+      if(this.originalContact.group != null){
+        this.groupContacts = this.originalContact.group.splice();
+        console.log(this.groupContacts);
+      
       }
+      console.log("OnInit: ");
+      console.log(this.contact);
     })
   }
 
   onSubmit(form: FormGroup){
-    console.log(this.originalContact);
     let value = form.value;
-    let newContact = new Contact(value.id, value.name, value.email, value.phone, value.imageUrl, value.group);
-    console.log(newContact);
-
+    let newContact = new Contact(this.originalContact.id, value.name, value.email, value.phone, value.imageUrl, this.groupContacts);
     if(this.editMode == true){
       this.contactService.updateContact(this.originalContact, newContact);
     }
@@ -62,5 +63,41 @@ export class ContactEditComponent implements OnInit {
   onCancel(){
     this.router.navigate(['contacts'])
   }
+
+  isInvalidContact(newContact: Contact){
+    if(!newContact){
+      return true;
+    }
+
+    if(this.contact && newContact.id=== this.contact.id){
+      return true;
+    }
+
+    for (let i = 0; i < this.groupContacts.length; i++){
+      if (newContact.id === this.groupContacts[i].id) {
+        return true;
+     }
+   }
+   return false;
+  }
+
+
+
+addToGroup($event: any) {
+  const selectedContact: Contact = $event.dragData;
+  const invalidGroupContact = this.isInvalidContact(selectedContact);
+  if (invalidGroupContact){
+     return;
+  }
+  this.groupContacts.push(selectedContact);
+}
+
+
+onRemoveItem(index: number) {
+  if (index < 0 || index >= this.groupContacts.length) {
+     return;
+  }
+  this.groupContacts.splice(index, 1);
+}
 
 }

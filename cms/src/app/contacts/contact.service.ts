@@ -70,6 +70,7 @@ export class ContactService {
     }
 
     updateContact(originalContact: Contact, newContact: Contact){
+    
         if((originalContact == null || undefined) || (newContact == null || undefined)){
             return;
         }
@@ -78,10 +79,9 @@ export class ContactService {
         if(pos < 0){
            return;
         }
-
-        newContact.id = originalContact.id
        this.contacts[pos] = newContact;
        let contactsListClone = this.contacts.slice();
+       console.log(contactsListClone);
        this.contactListChangedEvent.next(contactsListClone);
     }
 

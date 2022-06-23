@@ -23,8 +23,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DocumentEditComponent } from './documents/document-edit/document-edit.component';
 import { ContactEditComponent } from './contacts/contact-edit/contact-edit.component';
-import {DndModule} from 'ng2-dnd';
+import { DndModule } from 'ng2-dnd';
 import { HttpClientModule } from '@angular/common/http';
+
 
 @NgModule({
   declarations: [
@@ -46,14 +47,14 @@ import { HttpClientModule } from '@angular/common/http';
     ContactEditComponent
   ],
   imports: [
-    // DndModule.forRoot(),
-    BrowserModule, 
-    AppRoutingModule,  
+    DndModule.forRoot(),
+    BrowserModule,
+    AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
     FormsModule,
   ],
-  providers: [DocumentService, MessageService],
+  providers: [DocumentService, MessageService, ContactService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
