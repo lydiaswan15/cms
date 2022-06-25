@@ -1,16 +1,35 @@
-import { EventEmitter } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { EventEmitter, Injectable } from "@angular/core";
+import { Subject } from "rxjs";
 import { Message } from "./message.model";
 import { MOCKMESSAGES } from "./MOCKMESSAGES";
-
+@Injectable({
+    providedIn: 'root'
+})
 export class MessageService{
     messages: Message[];
+    maxMessageId: number;
     messageChangedEvent = new EventEmitter<Message[]>();
-    constructor(){
+    messageListChangedEvent = new Subject<Message[]>();
+    constructor(private http: HttpClient){
         this.messages = MOCKMESSAGES;
     }
 
     getMessages(): Message[]{
-        return this.messages.slice();
+        this.http.get('https://wdd-430-cms-ff32b-default-rtdb.firebaseio.com/messages.json')
+        .subscribe({
+            next: (messages: Message[]) =>{
+                this.messages = messages;
+                this.maxMessageId = this.getMaxId();
+                this.messages.sort();
+                this.messageListChangedEvent.next([...this.messages]);
+            }, 
+            error: (e) => console.log(e.message),
+        });
+
+        this.messageChangedEvent.emit(this.messages.slice());
+        
+        return;
     }
  
     getMessage(id: string): Message{
@@ -26,6 +45,28 @@ export class MessageService{
 
      addMessage(message: Message){
         this.messages.push(message);
-        this.messageChangedEvent.emit(this.messages.slice());
+        this.storeMessages();
      }
+
+     getMaxId() {
+        let maxId = 0;
+         this.messages.forEach(message => {
+            let currentId = parseInt(message.id);
+            if(currentId > maxId){
+                maxId = currentId;
+            }
+         });    
+
+        return maxId;
+     }
+
+     storeMessages(){
+        let messagesString = JSON.stringify(this.messages);
+
+        this.http.put('https://wdd-430-cms-ff32b-default-rtdb.firebaseio.com/messages.json', messagesString)
+        .subscribe(()=>{
+            this.messageChangedEvent.emit(this.messages.slice());
+        });
+        // Make sure to add the header
+    }
 }
