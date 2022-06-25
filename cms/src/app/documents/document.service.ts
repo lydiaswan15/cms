@@ -31,18 +31,6 @@ export class DocumentService{
     }
 
     getDocuments(): Document[]{
-    //     this.http.get('https://wdd-430-cms-ff32b-default-rtdb.firebaseio.com/documents.json')
-    //     .subscribe({
-    //         next:(documents: Document[])=>{
-    //             this.documents = documents;
-    //             this.maxDocumentId = this.getMaxId();
-    //             this.documents.sort();
-    //             this.documentChangedEvent.next([...this.documents]);
-    //         }, 
-    //         error: (e)=>{console.log(e.message)},
-    //     });
-    //     return;
-    // }
 
         console.log('documents in getDocuments()');
 
@@ -98,6 +86,7 @@ export class DocumentService{
         this.documents.push(newDocument);
         let documentListCloned = this.documents.slice();
         this.documentListChangedEvent.next(documentListCloned);
+        this.storeDocuments();
      }
 
      updateDocument(originalDocument: Document, newDocument: Document){
@@ -111,9 +100,9 @@ export class DocumentService{
          }
 
         //  newDocument.id = originalDocument.id
-        this.documents[pos] = newDocument
-        let documentsListClone = this.documents.slice()
-        this.documentListChangedEvent.next(documentsListClone)
+        this.documents[pos] = newDocument;
+        let documentsListClone = this.documents.slice();
+        this.storeDocuments();
      }
 
 
@@ -130,15 +119,21 @@ export class DocumentService{
 
         this.documents.splice(pos, 1)
         let documentsListClone = this.documents.slice()
-        this.documentListChangedEvent.next(documentsListClone);
+        this.storeDocuments();
     }
 
-    // storeDocuments(){
-    //     console.log(this.documents);
-    //     let documentsList = JSON.stringify(this.documents);
-    //     this.http.put('https://wdd-430-cms-ff32b-default-rtdb.firebaseio.com/documents.json', documentsList, {
-    //         headers: new HttpHeaders({'Content-Type' : 'application/json'})
-    //     })
-    // }
+
+    storeDocuments(){
+        let documentsString = JSON.stringify(this.documents);
+
+        this.http.put('https://wdd-430-cms-ff32b-default-rtdb.firebaseio.com/documents.json', documentsString)
+        .subscribe(()=>{
+            this.documentChangedEvent.emit(this.documents.slice());
+        });
+        // Make sure to add the header
+
+
+
+    }
      
 }
