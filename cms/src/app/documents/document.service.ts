@@ -31,16 +31,34 @@ export class DocumentService{
     }
 
     getDocuments(): Document[]{
+    //     this.http.get('https://wdd-430-cms-ff32b-default-rtdb.firebaseio.com/documents.json')
+    //     .subscribe({
+    //         next:(documents: Document[])=>{
+    //             this.documents = documents;
+    //             this.maxDocumentId = this.getMaxId();
+    //             this.documents.sort();
+    //             this.documentChangedEvent.next([...this.documents]);
+    //         }, 
+    //         error: (e)=>{console.log(e.message)},
+    //     });
+    //     return;
+    // }
+
+        console.log('documents in getDocuments()');
+
         this.http.get('https://wdd-430-cms-ff32b-default-rtdb.firebaseio.com/documents.json')
         .subscribe({
-            next:(documents: Document[])=>{
+            next: (documents: Document[]) =>{
                 this.documents = documents;
                 this.maxDocumentId = this.getMaxId();
                 this.documents.sort();
-                this.documentChangedEvent.next([...this.documents]);
+                this.documentListChangedEvent.next([...this.documents]);
             }, 
-            error: (e)=>{console.log(e.message)},
+            error: (e) => console.log(e.message),
         });
+
+        this.documentChangedEvent.emit(this.documents.slice());
+        
         return;
     }
 
@@ -59,7 +77,7 @@ export class DocumentService{
      getMaxId(): number{
          let maxId = 0;
          this.documents.forEach(document => {
-            console.log(document);
+            // console.log(document);
             // let currentId = parseInt(document.id);
             // if(currentId > maxId){
             //     maxId = currentId;
