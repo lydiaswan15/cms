@@ -65,11 +65,10 @@ export class DocumentService{
      getMaxId(): number{
          let maxId = 0;
          this.documents.forEach(document => {
-            // console.log(document);
-            // let currentId = parseInt(document.id);
-            // if(currentId > maxId){
-            //     maxId = currentId;
-            // }
+            let currentId = parseInt(document.id);
+            if(currentId > maxId){
+                maxId = currentId;
+            }
          });    
 
         return maxId;
@@ -131,9 +130,6 @@ export class DocumentService{
             this.documentChangedEvent.emit(this.documents.slice());
         });
         // Make sure to add the header
-
-
-
     }
      
 }

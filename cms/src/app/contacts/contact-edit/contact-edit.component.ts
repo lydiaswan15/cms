@@ -48,8 +48,19 @@ export class ContactEditComponent implements OnInit {
   }
 
   onSubmit(form: FormGroup){
+    let id;
+    if(!this.originalContact){
+      // There is no id and we need to set one. 
+
+      id = this.contactService.getMaxId();
+    }
+    else{
+      // We are editing a current document and will use the old id. 
+      id = this.originalContact.id;
+    }
     let value = form.value;
-    let newContact = new Contact(this.originalContact.id, value.name, value.email, value.phone, value.imageUrl, this.groupContacts);
+    let newContact = new Contact(id, value.name, value.email, value.phone, value.imageUrl, this.groupContacts);
+    console.log(newContact);
     if(this.editMode == true){
       this.contactService.updateContact(this.originalContact, newContact);
     }

@@ -42,9 +42,20 @@ export class DocumentEditComponent implements OnInit {
   }
 
   onSubmit(form: FormGroup){
-    console.log(this.originalDocument);
     let value = form.value;
-    let newDocument = new Document(value.id, value.name, value.description, value.url);
+    let id;
+
+    if(!this.originalDocument){
+      // There is no id and we need to set one. 
+
+      id = this.documentService.getMaxId();
+    }
+    else{
+      // We are editing a current document and will use the old id. 
+      id = this.originalDocument.id;
+    }
+
+    let newDocument = new Document(id, value.name, value.description, value.url);
     console.log(newDocument);
 
     if(this.editMode == true){
