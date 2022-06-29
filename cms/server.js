@@ -3,13 +3,6 @@ var messagesRoutes = require('./server/routes/messages');
 var documentsRoutes = require('./server/routes/documents');
 var contactsRoutes = require('./server/routes/contacts');
 
-
-app.use('/', index);
-app.use('/messages', messages);
-app.use('/documents', documents);
-app.use('/contacts', index);
-
-
 // Get dependencies
 var express = require('express');
 var path = require('path');
@@ -57,7 +50,11 @@ app.use(function(req, res, next){
     res.render("index");
 });
 
-// ... ADD YOUR CODE TO MAP YOUR URL'S TO ROUTING FILES HERE ...
+app.use('/', index);
+app.use('/messages', messagesRoutes);
+app.use('/documents', documentsRoutes);
+app.use('/contacts', contactsRoutes);
+
 
 // Tell express to map all other non-defined routes back to the index page
 app.get('*', (req, res) => {
