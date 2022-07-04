@@ -32,9 +32,7 @@ export class DocumentService{
 
     getDocuments(): Document[]{
 
-        console.log('documents in getDocuments()');
-
-        this.http.get('https://wdd-430-cms-ff32b-default-rtdb.firebaseio.com/documents.json')
+        this.http.get('http://localhost:3000/documents')
         .subscribe({
             next: (documents: Document[]) =>{
                 this.documents = documents;
@@ -50,18 +48,6 @@ export class DocumentService{
         return;
     }
 
-    // deleteDocument(document: Document) {
-    //     if (!document) {
-    //        return;
-    //     }
-    //     const pos = this.documents.indexOf(document);
-    //     if (pos < 0) {
-    //        return;
-    //     }
-    //     this.documents.splice(pos, 1);
-    //     this.documentChangedEvent.emit(this.documents.slice());
-    //  }
-
      getMaxId(): number{
          let maxId = 0;
          this.documents.forEach(document => {
@@ -75,51 +61,81 @@ export class DocumentService{
 
      }
 
-     addDocument(newDocument: Document){
-        if(newDocument == null || newDocument == undefined){
-            return
-        }
-
-        this.maxDocumentId++;
-        newDocument.id = this.maxDocumentId;
-        this.documents.push(newDocument);
-        let documentListCloned = this.documents.slice();
-        this.documentListChangedEvent.next(documentListCloned);
-        this.storeDocuments();
-     }
-
-     updateDocument(originalDocument: Document, newDocument: Document){
-         if((originalDocument == null || undefined) || (newDocument == null || undefined)){
-             return;
-         }
-
-         let pos = this.documents.indexOf(originalDocument);
-         if(pos < 0){
-            return;
-         }
-
-        //  newDocument.id = originalDocument.id
-        this.documents[pos] = newDocument;
-        let documentsListClone = this.documents.slice();
-        this.storeDocuments();
-     }
-
-
-    deleteDocument(document: Document) {
-        if(document == null || undefined){
-            return;
-        }
-
-
-        let pos = this.documents.indexOf(document)
-        if (pos < 0){
-            return;
-        }
-
-        this.documents.splice(pos, 1)
-        let documentsListClone = this.documents.slice()
-        this.storeDocuments();
+     
+addDocument(document: Document) {
+    if (!document) {
+      return;
     }
+
+    // make sure id of the new Document is empty
+    document.id = '';
+
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
+
+    // add to database
+    this.http.post<{ message: string, document: Document }>('http://localhost:3000/documents',
+      document,
+      { headers: headers })
+      .subscribe(
+        (responseData) => {
+          // add new document to documents
+          this.documents.push(responseData.document);
+          this.sortAndSend();
+        }
+      );
+  }
+
+  updateDocument(originalDocument: Document, newDocument: Document) {
+    if (!originalDocument || !newDocument) {
+      return;
+    }
+
+    const pos = this.documents.findIndex(d => d.id === originalDocument.id);
+
+    if (pos < 0) {
+      return;
+    }
+
+    // set the id of the new Document to the id of the old Document
+    newDocument.id = originalDocument.id;
+    newDocument._id = originalDocument._id;
+
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
+
+    // update database
+    this.http.put('http://localhost:3000/documents/' + originalDocument.id,
+      newDocument, { headers: headers })
+      .subscribe(
+        (response: Response) => {
+          this.documents[pos] = newDocument;
+          this.sortAndSend();
+        }
+      );
+  }
+
+
+    
+deleteDocument(document: Document) {
+
+    if (!document) {
+      return;
+    }
+
+    const pos = this.documents.findIndex(d => d.id === document.id);
+
+    if (pos < 0) {
+      return;
+    }
+
+    // delete from database
+    this.http.delete('http://localhost:3000/documents/' + document.id)
+      .subscribe(
+        (response: Response) => {
+          this.documents.splice(pos, 1);
+          this.sortAndSend();
+        }
+      );
+  }
 
 
     storeDocuments(){
@@ -130,6 +146,19 @@ export class DocumentService{
             this.documentChangedEvent.emit(this.documents.slice());
         });
         // Make sure to add the header
+    }
+
+    sortAndSend(){
+        // Yeah, you have to write this one yourself. 
+        // It does exactly what its name suggests: it sorts then sends an array to your observable
+        //  (like the contactListChangedEvent Subject).
+
+        let documentsString = JSON.stringify(this.documents);
+
+        this.http.put('https://wdd-430-cms-ff32b-default-rtdb.firebaseio.com/documents.json', documentsString)
+        .subscribe(()=>{
+            this.documentChangedEvent.emit(this.documents.slice());
+        });
     }
      
 }

@@ -2,6 +2,7 @@ var index = require('./server/routes/app');
 var messagesRoutes = require('./server/routes/messages');
 var documentsRoutes = require('./server/routes/documents');
 var contactsRoutes = require('./server/routes/contacts');
+var mongoose = require('mongoose');
 
 // Get dependencies
 var express = require('express');
@@ -49,11 +50,22 @@ app.use('/', index);
 app.use(function(req, res, next){
     res.render("index");
 });
-
 app.use('/', index);
 app.use('/messages', messagesRoutes);
 app.use('/documents', documentsRoutes);
 app.use('/contacts', contactsRoutes);
+
+// establish a connection to the mongo database
+mongoose.connect('mongodb://localhost:27017/cms',
+   { useNewUrlParser: true }, (err, res) => {
+      if (err) {
+         console.log('Connection failed: ' + err);
+      }
+      else {
+         console.log('Connected to database!');
+      }
+   }
+);
 
 
 // Tell express to map all other non-defined routes back to the index page
