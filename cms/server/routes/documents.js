@@ -3,9 +3,12 @@ var router = express.Router();
 module.exports = router; 
 const sequenceGenerator = require('./sequenceGenerator');
 const Document = require('../models/document');
-const documents = require('../models/documents');
+// const documents = require('../models/documents');
+
+console.log('calling the routing file');
 
 router.get('/', (req, res, next) => {
+  console.log('testing in document route.');
     Document.find()
       .populate('group')
       .then(documents => {

@@ -3,7 +3,6 @@ var router = express.Router();
 module.exports = router; 
 const sequenceGenerator = require('./sequenceGenerator');
 const Contact = require('../models/contact');
-const contacts = require('../models/contacts');
 
 router.get('/', (req, res, next) => {
     Contact.find()

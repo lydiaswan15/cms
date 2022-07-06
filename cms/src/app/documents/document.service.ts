@@ -32,6 +32,13 @@ export class DocumentService{
 
     getDocuments(): Document[]{
 
+        try{
+          this.http.get('http://localhost:3000/documents')
+          console.log('http get working in getDocuments() from document service.')
+        }
+        catch{
+          console.log('cannot get documents in getDocuments() in document service.')
+        }
         this.http.get('http://localhost:3000/documents')
         .subscribe({
             next: (documents: Document[]) =>{
@@ -39,11 +46,15 @@ export class DocumentService{
                 this.maxDocumentId = this.getMaxId();
                 this.documents.sort();
                 this.documentListChangedEvent.next([...this.documents]);
+
+                console.log("list of documents in getDocuments():");
+                console.log(this.documents);
             }, 
             error: (e) => console.log(e.message),
         });
-
         this.documentChangedEvent.emit(this.documents.slice());
+
+        console.log(this.documents);
         
         return;
     }
