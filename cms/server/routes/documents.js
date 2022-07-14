@@ -5,25 +5,18 @@ const sequenceGenerator = require('./sequenceGenerator');
 const Document = require('../models/document');
 // const documents = require('../models/documents');
 
-console.log('calling the routing file');
-
-router.get('/', (req, res, next) => {
-  console.log('testing in document route.');
-    Document.find()
-      .populate('group')
-      .then(documents => {
-        res.status(200).json({
-            message: 'Documents fetched successfully!',
-            documents: documents
-          });
-      })
-      .catch(error => {
-        res.status(500).json({
-          message: 'An error occurred',
-          error: error
-        });
+router.get("/", (req, res, next) =>{
+  Document.find().exec((err, documentList) =>{
+    if(err){
+      return res.status(500).json({
+        title: "An error occured", 
+        error: err, 
       });
+    }
+    return res.status(200).json(documentList);
   });
+});
+
 router.post('/', (req, res, next) => {
     const maxDocumentId = sequenceGenerator.nextId("documents");
   

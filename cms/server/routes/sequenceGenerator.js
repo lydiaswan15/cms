@@ -1,4 +1,5 @@
 var Sequence = require('../models/sequence');
+const res = require('express/lib/response');
 
 var maxDocumentId;
 var maxMessageId;
@@ -16,10 +17,10 @@ function SequenceGenerator() {
         });
       }
 
-      sequenceId = sequence._id;
-      maxDocumentId = sequence.maxDocumentId;
-      maxMessageId = sequence.maxMessageId;
-      maxContactId = sequence.maxContactId;
+      sequenceId = sequence?._id;
+      maxDocumentId = sequence?.maxDocumentId;
+      maxMessageId = sequence?.maxMessageId;
+      maxContactId = sequence?.maxContactId;
     });
 }
 

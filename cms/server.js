@@ -46,7 +46,6 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, 'dist/cms')));
 
 // Tell express to map the default route ('/') to the index route
-app.use('/', index);
 
 app.use(function(req, res, next){
     res.render("index");
@@ -56,7 +55,12 @@ app.use('/messages', messagesRoutes);
 app.use('/documents', documentsRoutes);
 app.use('/contacts', contactsRoutes);
 
-// establish a connection to the mongo database
+
+// Tell express to map all other non-defined routes back to the index page
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist/cms/index.html'));
+});
+
 mongoose.connect('mongodb://localhost:27017/cms',
    { useNewUrlParser: true }, (err, res) => {
       if (err) {
@@ -67,12 +71,6 @@ mongoose.connect('mongodb://localhost:27017/cms',
       }
    }
 );
-
-
-// Tell express to map all other non-defined routes back to the index page
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist/cms/index.html'));
-});
 
 // Define the port address and tell express to use this port
 const port = process.env.PORT || '3000';
@@ -85,3 +83,5 @@ const server = http.createServer(app);
 server.listen(port, function() {
   console.log('API running on localhost: ' + port)
 });
+
+// establish a connection to the mongo database
